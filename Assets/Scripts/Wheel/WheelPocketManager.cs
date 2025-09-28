@@ -104,6 +104,12 @@ namespace Wheel
             return pockets[Random.Range(0, pockets.Count)];
         }
 
+        public int GetRandomPocketNumber()
+        {
+            if (wheelNumbers == null || wheelNumbers.Length == 0) return -1;
+            return wheelNumbers[Random.Range(0, wheelNumbers.Length)];
+        }
+
         public int GetIndexOfNumber(int number)
         {
             if (wheelNumbers == null) return -1;
