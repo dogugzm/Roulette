@@ -1,0 +1,87 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
+
+namespace UI
+{
+    public class BettingUI : MonoBehaviour
+    {
+        [SerializeField] private Text playerBalanceText;
+        [SerializeField] private List<ChipUIView> chipViews;
+        [SerializeField] private GameManager gameManager;
+
+        [SerializeField] private Button spinButton;
+
+        private IBettingManager _bettingManager;
+        private IChipManager _chipManager;
+        private ChipUIView _selectedChipView;
+
+
+        public void SpinButtonPressed()
+        {
+            if (gameManager != null)
+            {
+                gameManager.SpinButtonPressed();
+            }
+            else
+            {
+                Debug.LogError("GameManager reference is not set in BettingUI!");
+            }
+        }
+
+        void Start()
+        {
+            _bettingManager = ServiceLocator.Get<IBettingManager>();
+            _chipManager = ServiceLocator.Get<IChipManager>();
+
+            _chipManager.OnChipPlaced += OnChipPlaced;
+            spinButton.onClick.AddListener(SpinButtonPressed);
+
+            foreach (var chipUIView in chipViews)
+            {
+                _ = chipUIView.InitAsync(new ChipUIView.Data()
+                {
+                    clickAction = () => SelectChip(chipUIView.Chip.Value)
+                });
+            }
+        }
+
+        private void OnDestroy()
+        {
+            spinButton.onClick.RemoveListener(SpinButtonPressed);
+        }
+
+        private void OnChipPlaced(Transform data)
+        {
+            //TODO: Object pooling
+            // y offset to avoid z-fighting
+
+            Vector3 offset = new Vector3(Random.Range(-0.1f, 0.1f), 0, Random.Range(-0.1f, 0.1f));
+            Instantiate(_selectedChipView.Chip.ChipPrefab, data.position + offset, Quaternion.identity, data);
+        }
+
+        void Update()
+        {
+            // if (_bettingManager != null)
+            // {
+            //     playerBalanceText.text = $"Balance: {_bettingManager.PlayerBalance}";
+            // }
+        }
+
+        private void SelectChip(int value)
+        {
+            _chipManager.SetCurrentChipValue(value);
+            _selectedChipView = chipViews.FirstOrDefault(chipView => chipView.Chip.Value == value);
+            foreach (var chipUIView in chipViews)
+            {
+                bool isSelected = chipUIView.Chip.Value == value;
+                chipUIView.SetSelected(isSelected);
+            }
+
+            Debug.Log($"Selected chip: {value}");
+        }
+    }
+}
