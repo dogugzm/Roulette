@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using DI;
 using System.Threading.Tasks;
+using DefaultNamespace;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -17,12 +19,14 @@ public class GameManager : MonoBehaviour
     private IBettingManager _bettingManager;
     private IPayoutManager _payoutManager;
     private IWheelController _wheelController;
+    private IStatisticService _statisticService;
 
     void Start()
     {
         _bettingManager = ServiceLocator.Get<IBettingManager>();
         _payoutManager = ServiceLocator.Get<IPayoutManager>();
         _wheelController = ServiceLocator.Get<IWheelController>();
+        _statisticService = ServiceLocator.Get<IStatisticService>();
 
         _wheelController.OnSpinComplete += OnWheelSpinComplete;
 
@@ -68,11 +72,11 @@ public class GameManager : MonoBehaviour
         _wheelController.Spin();
     }
 
-
     private async void OnWheelSpinComplete(int winningNumber)
     {
         Debug.Log($"Wheel stopped. Winning number is: {winningNumber}");
 
+        _statisticService.RecordWinningNumber(winningNumber);
         _payoutManager.CalculatePayouts(winningNumber);
 
         await PayoutRoutine();

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace DefaultNamespace
 {
@@ -13,6 +15,16 @@ namespace DefaultNamespace
         public int TotalWins => _totalWins;
         public int TotalLosses => _totalLosses;
         public float TotalProfitLoss => _totalProfitLoss;
+        public List<int> WinningNumbers { get; } = new();
+
+        public void RecordWinningNumber(int number)
+        {
+            WinningNumbers.Add(number);
+            OnWinningNumberRecorded?.Invoke(number);
+        }
+
+        public Action<int> OnWinningNumberRecorded { get; set; }
+
         public Action SpinRecorded { get; set; }
 
         public void RecordSpin(bool isWin, float amountWonOrLost)
