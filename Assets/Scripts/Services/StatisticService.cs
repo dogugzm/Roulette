@@ -1,6 +1,8 @@
+using System;
+
 namespace DefaultNamespace
 {
-    public class StatisticService
+    public class StatisticService : IStatisticService
     {
         private int _totalSpins;
         private int _totalWins;
@@ -11,6 +13,7 @@ namespace DefaultNamespace
         public int TotalWins => _totalWins;
         public int TotalLosses => _totalLosses;
         public float TotalProfitLoss => _totalProfitLoss;
+        public Action SpinRecorded { get; set; }
 
         public void RecordSpin(bool isWin, float amountWonOrLost)
         {
@@ -25,6 +28,7 @@ namespace DefaultNamespace
             }
 
             _totalProfitLoss += amountWonOrLost;
+            SpinRecorded?.Invoke();
         }
 
 

@@ -1,19 +1,23 @@
+using DefaultNamespace;
 using System.Linq;
 using UnityEngine;
 
 public class PayoutManager : IPayoutManager
 {
     private readonly IBettingManager _bettingManager;
+    private readonly IStatisticService _statisticService;
 
-    public PayoutManager(IBettingManager bettingManager)
+    public PayoutManager(IBettingManager bettingManager, IStatisticService statisticService)
     {
         _bettingManager = bettingManager;
+        _statisticService = statisticService;
     }
 
     public void CalculatePayouts(int winningNumber)
     {
         var bets = _bettingManager.GetCurrentBets();
         int totalWinnings = 0;
+        int totalBetAmount = bets.Sum(b => b.Amount);
 
         foreach (var bet in bets)
         {
@@ -29,6 +33,9 @@ public class PayoutManager : IPayoutManager
         {
             _bettingManager.AwardWinnings(totalWinnings);
         }
+
+        var profit = totalWinnings - totalBetAmount;
+        _statisticService.RecordSpin(profit > 0, profit);
 
         Debug.Log($"Winning Number: {winningNumber}. Total Payout: {totalWinnings}");
     }

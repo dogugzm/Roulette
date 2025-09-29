@@ -12,7 +12,10 @@ namespace DI
             var bettingManager = new BettingManager(1000);
             ServiceLocator.Register<IBettingManager>(bettingManager);
 
-            var payoutManager = new PayoutManager(bettingManager);
+            var statisticService = new StatisticService();
+            ServiceLocator.Register<IStatisticService>(statisticService);
+
+            var payoutManager = new PayoutManager(bettingManager, statisticService);
             ServiceLocator.Register<IPayoutManager>(payoutManager);
 
             var chipManager = new UI.ChipManager(bettingManager);
