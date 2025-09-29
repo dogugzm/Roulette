@@ -20,8 +20,7 @@ public class WheelController : MonoBehaviour, IWheelController
     public event Action<int> OnSpinComplete;
 
     private bool isSpinning = false;
-
-
+    
     public void Spin()
     {
         if (isSpinning)
@@ -30,7 +29,7 @@ public class WheelController : MonoBehaviour, IWheelController
             return;
         }
 
-        RunBallRoutineAsync();
+        RunBallRoutineAsync(1);
     }
 
     private async void RunBallRoutineAsync(int? deterministicNumber = null)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -14,9 +15,11 @@ namespace UI
         [SerializeField] private GameManager gameManager;
 
         [SerializeField] private Button spinButton;
+        [SerializeField] private List<NumberUI> numberUIs;
 
         private IBettingManager _bettingManager;
         private IChipManager _chipManager;
+        private IPayoutManager _payoutManager;
         private ChipUIView _selectedChipView;
 
 
@@ -36,8 +39,11 @@ namespace UI
         {
             _bettingManager = ServiceLocator.Get<IBettingManager>();
             _chipManager = ServiceLocator.Get<IChipManager>();
+            _payoutManager = ServiceLocator.Get<IPayoutManager>();
 
             _chipManager.OnChipPlaced += OnChipPlaced;
+            _payoutManager.OnWinningBets += OnWinningBets;
+            _bettingManager.OnBetsCleared += OnBetsCleared;
             spinButton.onClick.AddListener(SpinButtonPressed);
 
             foreach (var chipUIView in chipViews)
@@ -52,6 +58,31 @@ namespace UI
         private void OnDestroy()
         {
             spinButton.onClick.RemoveListener(SpinButtonPressed);
+            _payoutManager.OnWinningBets -= OnWinningBets;
+            _bettingManager.OnBetsCleared -= OnBetsCleared;
+        }
+
+        private void OnBetsCleared()
+        {
+            foreach (var numberUI in numberUIs)
+            {
+                numberUI.Reset();
+            }
+        }
+
+        private void OnWinningBets(List<Bet> winningBets)
+        {
+            foreach (var bet in winningBets)
+            {
+                foreach (var number in bet.Numbers)
+                {
+                    var numberUI = numberUIs.FirstOrDefault(n => n.number == number);
+                    if (numberUI != null)
+                    {
+                        numberUI.Highlight();
+                    }
+                }
+            }
         }
 
         private void OnChipPlaced(Transform data)

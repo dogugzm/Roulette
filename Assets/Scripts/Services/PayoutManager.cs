@@ -1,9 +1,12 @@
+using System;
+using System.Collections.Generic;
 using DefaultNamespace;
 using System.Linq;
 using UnityEngine;
 
 public class PayoutManager : IPayoutManager
 {
+    public event Action<List<Bet>> OnWinningBets;
     private readonly IBettingManager _bettingManager;
     private readonly IStatisticService _statisticService;
 
@@ -18,6 +21,7 @@ public class PayoutManager : IPayoutManager
         var bets = _bettingManager.GetCurrentBets();
         int totalWinnings = 0;
         int totalBetAmount = bets.Sum(b => b.Amount);
+        List<Bet> winningBets = new List<Bet>();
 
         foreach (var bet in bets)
         {
@@ -26,8 +30,11 @@ public class PayoutManager : IPayoutManager
                 int payout = BetRules.GetPayout(bet.BetType);
                 int winnings = bet.Amount + (bet.Amount * payout);
                 totalWinnings += winnings;
+                winningBets.Add(bet);
             }
         }
+
+        OnWinningBets?.Invoke(winningBets);
 
         if (totalWinnings > 0)
         {
