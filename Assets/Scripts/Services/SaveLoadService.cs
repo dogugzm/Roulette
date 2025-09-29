@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.IO;
 
 namespace Services
 {
@@ -12,35 +13,42 @@ namespace Services
 
     public class SaveLoadService : ISaveLoadService
     {
+        private string GetPath(string key)
+        {
+            return Path.Combine(Application.persistentDataPath, key + ".json");
+        }
+
         public void Save<T>(string key, T data)
         {
+            string path = GetPath(key);
             string json = JsonUtility.ToJson(data);
-            PlayerPrefs.SetString(key, json);
-            PlayerPrefs.Save();
+            File.WriteAllText(path, json);
         }
 
         public T Load<T>(string key)
         {
-            if (!PlayerPrefs.HasKey(key))
+            string path = GetPath(key);
+            if (!File.Exists(path))
             {
                 return default;
             }
 
-            string json = PlayerPrefs.GetString(key);
+            string json = File.ReadAllText(path);
             return JsonUtility.FromJson<T>(json);
         }
 
         public bool HasKey(string key)
         {
-            return PlayerPrefs.HasKey(key);
+            string path = GetPath(key);
+            return File.Exists(path);
         }
 
         public void DeleteKey(string key)
         {
-            if (PlayerPrefs.HasKey(key))
+            string path = GetPath(key);
+            if (File.Exists(path))
             {
-                PlayerPrefs.DeleteKey(key);
-                PlayerPrefs.Save();
+                File.Delete(path);
             }
         }
     }

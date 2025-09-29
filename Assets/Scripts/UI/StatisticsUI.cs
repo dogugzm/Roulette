@@ -1,4 +1,4 @@
-using System;
+using Models;
 using Services;
 using TMPro;
 using UnityEngine;
@@ -18,6 +18,12 @@ namespace UI
         {
             _statisticService = ServiceLocator.Get<IStatisticService>();
             _statisticService.SpinRecorded += UpdateUI;
+            _statisticService.RestoredCompleted += RestoredCompleted;
+            UpdateUI();
+        }
+
+        private void RestoredCompleted(StatisticData data)
+        {
             UpdateUI();
         }
 
@@ -26,6 +32,7 @@ namespace UI
             if (_statisticService != null)
             {
                 _statisticService.SpinRecorded -= UpdateUI;
+                _statisticService.RestoredCompleted -= RestoredCompleted;
             }
         }
 

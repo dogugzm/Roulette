@@ -8,7 +8,7 @@ namespace Services
     {
         public event Action OnBetsCleared;
 
-        private List<Bet> _currentBets = new List<Bet>();
+        private List<Bet> _currentBets = new();
         private int _playerBalance;
 
         public int PlayerBalance => _playerBalance;
@@ -49,5 +49,20 @@ namespace Services
         {
             return _currentBets.AsReadOnly();
         }
+
+        public void RestoreState(int balance, IReadOnlyList<Bet> bets)
+        {
+            _playerBalance = balance;
+            // update text via playerBalance
+
+            if (bets != null)
+            {
+                _currentBets = new List<Bet>(bets);
+            }
+
+            OnRestoreCompleted?.Invoke(_playerBalance, GetCurrentBets());
+        }
+
+        public Action<int, IReadOnlyList<Bet>> OnRestoreCompleted { get; set; }
     }
 }

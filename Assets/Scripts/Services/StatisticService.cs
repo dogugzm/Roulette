@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Models;
 
 namespace Services
 {
@@ -14,11 +15,14 @@ namespace Services
         public int TotalWins => _totalWins;
         public int TotalLosses => _totalLosses;
         public float TotalProfitLoss => _totalProfitLoss;
-        public List<int> WinningNumbers { get; } = new();
+        public Action<StatisticData> RestoredCompleted { get; set; }
+
+        public IReadOnlyList<int> WinningNumbers => _winningNumbers.AsReadOnly();
+        private List<int> _winningNumbers = new();
 
         public void RecordWinningNumber(int number)
         {
-            WinningNumbers.Add(number);
+            _winningNumbers.Add(number);
             OnWinningNumberRecorded?.Invoke(number);
         }
 
@@ -49,6 +53,17 @@ namespace Services
             _totalWins = 0;
             _totalLosses = 0;
             _totalProfitLoss = 0f;
+            _winningNumbers.Clear();
+        }
+
+        public void RestoreState(Models.StatisticData data)
+        {
+            _totalSpins = data.TotalSpins;
+            _totalWins = data.TotalWins;
+            _totalLosses = data.TotalLosses;
+            _totalProfitLoss = data.TotalProfitLoss;
+            _winningNumbers = new List<int>(data.WinningNumbers);
+            RestoredCompleted?.Invoke(data);
         }
     }
 }

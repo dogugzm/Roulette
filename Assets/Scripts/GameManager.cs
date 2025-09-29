@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     private IWheelController _wheelController;
     private IStatisticService _statisticService;
     private ICameraService _cameraService;
+    private ISaveLoadService _saveLoadService;
 
     void Start()
     {
@@ -29,9 +30,11 @@ public class GameManager : MonoBehaviour
         _wheelController = ServiceLocator.Get<IWheelController>();
         _statisticService = ServiceLocator.Get<IStatisticService>();
         _cameraService = ServiceLocator.Get<ICameraService>();
+        _saveLoadService = ServiceLocator.Get<ISaveLoadService>();
 
         _wheelController.OnSpinComplete += OnWheelSpinComplete;
 
+        LoadGame();
         ChangeState(GameState.Betting);
     }
 
@@ -82,6 +85,8 @@ public class GameManager : MonoBehaviour
         _statisticService.RecordWinningNumber(winningNumber);
         _payoutManager.CalculatePayouts(winningNumber);
 
+        SaveGame();
+
         await PayoutRoutine();
     }
 
@@ -93,8 +98,40 @@ public class GameManager : MonoBehaviour
         await Task.Delay(3000);
 
         Debug.Log("Payouts complete. Clearing bets for the next round.");
-        _bettingManager.ClearBets();
-
         ChangeState(GameState.Betting);
+    }
+
+    public void SaveGame()
+    {
+        var statisticData = new Models.StatisticData
+        {
+            TotalSpins = _statisticService.TotalSpins,
+            TotalWins = _statisticService.TotalWins,
+            TotalLosses = _statisticService.TotalLosses,
+            TotalProfitLoss = _statisticService.TotalProfitLoss,
+            WinningNumbers = new List<int>(_statisticService.WinningNumbers)
+        };
+
+        var gameData = new GameData
+        {
+            PlayerBalance = _bettingManager.PlayerBalance,
+            CurrentBets = new List<Bet>(_bettingManager.GetCurrentBets()),
+            Statistics = statisticData
+        };
+
+        _saveLoadService.Save("GameData", gameData);
+        Debug.Log("Game saved!");
+    }
+
+    public void LoadGame()
+    {
+        if (!_saveLoadService.HasKey("GameData")) return;
+
+        var gameData = _saveLoadService.Load<GameData>("GameData");
+
+        _bettingManager.RestoreState(gameData.PlayerBalance, gameData.CurrentBets);
+        _statisticService.RestoreState(gameData.Statistics);
+
+        Debug.Log("Game loaded!");
     }
 }

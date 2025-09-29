@@ -11,5 +11,7 @@ namespace Services
         void ClearBets();
         void AwardWinnings(int amount);
         IReadOnlyList<Bet> GetCurrentBets();
+        void RestoreState(int balance, IReadOnlyList<Bet> bets);
+        Action<int, IReadOnlyList<Bet>> OnRestoreCompleted { get; set; }
     }
 }

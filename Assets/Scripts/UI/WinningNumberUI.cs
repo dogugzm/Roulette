@@ -1,3 +1,4 @@
+using Models;
 using Services;
 using UnityEngine;
 
@@ -13,9 +14,20 @@ namespace UI
         private void Start()
         {
             _statisticService = ServiceLocator.Get<IStatisticService>();
+            _statisticService.RestoredCompleted += OnRestoredCompleted;
             if (_statisticService != null)
             {
                 _statisticService.OnWinningNumberRecorded += AddWinningNumber;
+            }
+        }
+
+        private void OnRestoredCompleted(StatisticData statisticData)
+        {
+            if (_statisticService == null) return;
+
+            foreach (var number in statisticData.WinningNumbers)
+            {
+                AddWinningNumber(number);
             }
         }
 

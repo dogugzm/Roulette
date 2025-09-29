@@ -17,6 +17,7 @@ namespace UI
 
         [SerializeField] private Button spinButton;
         [SerializeField] private List<NumberUI> numberUIs;
+        [SerializeField] private List<BettingSpotUI> bettingSpotUIs;
 
         private IBettingManager _bettingManager;
         private IChipManager _chipManager;
@@ -45,6 +46,7 @@ namespace UI
             _chipManager.OnChipPlaced += OnChipPlaced;
             _payoutManager.OnWinningBets += OnWinningBets;
             _bettingManager.OnBetsCleared += OnBetsCleared;
+            _bettingManager.OnRestoreCompleted += OnRestoreCompleted;
             spinButton.onClick.AddListener(SpinButtonPressed);
 
             foreach (var chipUIView in chipViews)
@@ -53,6 +55,14 @@ namespace UI
                 {
                     clickAction = () => SelectChip(chipUIView.Chip.Value)
                 });
+            }
+        }
+
+        private void OnRestoreCompleted(int balance, IReadOnlyList<Bet> bets)
+        {
+            //playerBalanceText.text = $"Balance: {balance}";
+            foreach (var bet in bets)
+            {
             }
         }
 
