@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 
-namespace DefaultNamespace
+namespace Services
 {
     public interface IStatisticService
     {

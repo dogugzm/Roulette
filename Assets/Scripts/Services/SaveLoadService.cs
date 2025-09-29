@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace Services
 {
     public interface ISaveLoadService
     {

@@ -1,9 +1,11 @@
-
 using System;
 using System.Collections.Generic;
 
-public interface IPayoutManager
+namespace Services
 {
-    event Action<List<Bet>> OnWinningBets;
-    void CalculatePayouts(int winningNumber);
+    public interface IPayoutManager
+    {
+        event Action<List<Bet>> OnWinningBets;
+        void CalculatePayouts(int winningNumber);
+    }
 }

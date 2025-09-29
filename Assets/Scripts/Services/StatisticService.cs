@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using NUnit.Framework;
 
-namespace DefaultNamespace
+namespace Services
 {
     public class StatisticService : IStatisticService
     {

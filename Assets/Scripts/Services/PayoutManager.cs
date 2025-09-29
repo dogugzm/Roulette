@@ -1,68 +1,70 @@
 using System;
 using System.Collections.Generic;
-using DefaultNamespace;
 using System.Linq;
 using UnityEngine;
 
-public class PayoutManager : IPayoutManager
+namespace Services
 {
-    public event Action<List<Bet>> OnWinningBets;
-    private readonly IBettingManager _bettingManager;
-    private readonly IStatisticService _statisticService;
-
-    public PayoutManager(IBettingManager bettingManager, IStatisticService statisticService)
+    public class PayoutManager : IPayoutManager
     {
-        _bettingManager = bettingManager;
-        _statisticService = statisticService;
-    }
+        public event Action<List<Bet>> OnWinningBets;
+        private readonly IBettingManager _bettingManager;
+        private readonly IStatisticService _statisticService;
 
-    public void CalculatePayouts(int winningNumber)
-    {
-        var bets = _bettingManager.GetCurrentBets();
-        int totalWinnings = 0;
-        int totalBetAmount = bets.Sum(b => b.Amount);
-        List<Bet> winningBets = new List<Bet>();
-
-        foreach (var bet in bets)
+        public PayoutManager(IBettingManager bettingManager, IStatisticService statisticService)
         {
-            if (IsWinner(bet, winningNumber))
+            _bettingManager = bettingManager;
+            _statisticService = statisticService;
+        }
+
+        public void CalculatePayouts(int winningNumber)
+        {
+            var bets = _bettingManager.GetCurrentBets();
+            int totalWinnings = 0;
+            int totalBetAmount = bets.Sum(b => b.Amount);
+            List<Bet> winningBets = new List<Bet>();
+
+            foreach (var bet in bets)
             {
-                int payout = BetRules.GetPayout(bet.BetType);
-                int winnings = bet.Amount + (bet.Amount * payout);
-                totalWinnings += winnings;
-                winningBets.Add(bet);
+                if (IsWinner(bet, winningNumber))
+                {
+                    int payout = BetRules.GetPayout(bet.BetType);
+                    int winnings = bet.Amount + (bet.Amount * payout);
+                    totalWinnings += winnings;
+                    winningBets.Add(bet);
+                }
             }
-        }
 
-        OnWinningBets?.Invoke(winningBets);
+            OnWinningBets?.Invoke(winningBets);
 
-        if (totalWinnings > 0)
-        {
-            _bettingManager.AwardWinnings(totalWinnings);
-        }
-
-        var profit = totalWinnings - totalBetAmount;
-        _statisticService.RecordSpin(profit > 0, profit);
-
-        Debug.Log($"Winning Number: {winningNumber}. Total Payout: {totalWinnings}");
-    }
-
-    private bool IsWinner(Bet bet, int winningNumber)
-    {
-        if (winningNumber is 0 or 37)
-        {
-            if (bet.BetType >= BetType.Red && bet.BetType <= BetType.Column3)
+            if (totalWinnings > 0)
             {
-                return false;
+                _bettingManager.AwardWinnings(totalWinnings);
             }
+
+            var profit = totalWinnings - totalBetAmount;
+            _statisticService.RecordSpin(profit > 0, profit);
+
+            Debug.Log($"Winning Number: {winningNumber}. Total Payout: {totalWinnings}");
         }
 
-        if (bet.BetType <= BetType.SixLine)
+        private bool IsWinner(Bet bet, int winningNumber)
         {
-            return bet.Numbers.Contains(winningNumber);
-        }
+            if (winningNumber is 0 or 37)
+            {
+                if (bet.BetType >= BetType.Red && bet.BetType <= BetType.Column3)
+                {
+                    return false;
+                }
+            }
 
-        int[] winningSet = BetRules.GetBetNumbers(bet.BetType);
-        return winningSet.Contains(winningNumber);
+            if (bet.BetType <= BetType.SixLine)
+            {
+                return bet.Numbers.Contains(winningNumber);
+            }
+
+            int[] winningSet = BetRules.GetBetNumbers(bet.BetType);
+            return winningSet.Contains(winningNumber);
+        }
     }
 }

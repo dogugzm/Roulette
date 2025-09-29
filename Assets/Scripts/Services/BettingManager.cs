@@ -1,51 +1,53 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Object = System.Object;
 
-public class BettingManager : IBettingManager
+namespace Services
 {
-    public event Action OnBetsCleared;
-
-    private List<Bet> _currentBets = new List<Bet>();
-    private int _playerBalance;
-
-    public int PlayerBalance => _playerBalance;
-
-    public BettingManager(int startingBalance)
+    public class BettingManager : IBettingManager
     {
-        _playerBalance = startingBalance;
-    }
+        public event Action OnBetsCleared;
 
-    public bool PlaceBet(int amount, BetType betType, int[] numbers)
-    {
-        if (amount > _playerBalance)
+        private List<Bet> _currentBets = new List<Bet>();
+        private int _playerBalance;
+
+        public int PlayerBalance => _playerBalance;
+
+        public BettingManager(int startingBalance)
         {
-            Debug.LogWarning("Not enough balance to place the bet.");
-            return false;
+            _playerBalance = startingBalance;
         }
 
-        _playerBalance -= amount;
-        Bet bet = new Bet(amount, betType, numbers);
-        _currentBets.Add(bet);
-        Debug.Log($"Placed bet of {bet.Amount} on {bet.BetType}. Current balance: {_playerBalance}");
-        return true;
-    }
+        public bool PlaceBet(int amount, BetType betType, int[] numbers)
+        {
+            if (amount > _playerBalance)
+            {
+                Debug.LogWarning("Not enough balance to place the bet.");
+                return false;
+            }
 
-    public void AwardWinnings(int amount)
-    {
-        _playerBalance += amount;
-        Debug.Log($"Awarded {amount}. New balance: {_playerBalance}");
-    }
+            _playerBalance -= amount;
+            Bet bet = new Bet(amount, betType, numbers);
+            _currentBets.Add(bet);
+            Debug.Log($"Placed bet of {bet.Amount} on {bet.BetType}. Current balance: {_playerBalance}");
+            return true;
+        }
 
-    public void ClearBets()
-    {
-        _currentBets.Clear();
-        OnBetsCleared?.Invoke();
-    }
+        public void AwardWinnings(int amount)
+        {
+            _playerBalance += amount;
+            Debug.Log($"Awarded {amount}. New balance: {_playerBalance}");
+        }
 
-    public IReadOnlyList<Bet> GetCurrentBets()
-    {
-        return _currentBets.AsReadOnly();
+        public void ClearBets()
+        {
+            _currentBets.Clear();
+            OnBetsCleared?.Invoke();
+        }
+
+        public IReadOnlyList<Bet> GetCurrentBets()
+        {
+            return _currentBets.AsReadOnly();
+        }
     }
 }

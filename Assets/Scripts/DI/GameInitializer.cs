@@ -1,10 +1,13 @@
-using DefaultNamespace;
+using System.Collections.Generic;
+using Services;
 using UnityEngine;
 
 namespace DI
 {
     public class GameInitializer : MonoBehaviour
     {
+        [SerializeField] private List<CameraTransformData> cameraPositions;
+
         private void Awake()
         {
             ServiceLocator.Register<ISaveLoadService>(new SaveLoadService());
@@ -23,6 +26,9 @@ namespace DI
 
             IWheelController wheelController = FindObjectOfType<WheelController>();
             ServiceLocator.Register<IWheelController>(wheelController);
+
+            var cameraService = new CameraService(cameraPositions);
+            ServiceLocator.Register<ICameraService>(cameraService);
         }
     }
 }

@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using DI;
 using System.Threading.Tasks;
-using DefaultNamespace;
+using Services;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private enum GameState
+    public enum GameState
     {
         Idle,
         Betting,
@@ -20,6 +20,7 @@ public class GameManager : MonoBehaviour
     private IPayoutManager _payoutManager;
     private IWheelController _wheelController;
     private IStatisticService _statisticService;
+    private ICameraService _cameraService;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
         _payoutManager = ServiceLocator.Get<IPayoutManager>();
         _wheelController = ServiceLocator.Get<IWheelController>();
         _statisticService = ServiceLocator.Get<IStatisticService>();
+        _cameraService = ServiceLocator.Get<ICameraService>();
 
         _wheelController.OnSpinComplete += OnWheelSpinComplete;
 
@@ -46,6 +48,7 @@ public class GameManager : MonoBehaviour
         if (_currentState == newState) return;
 
         _currentState = newState;
+        _cameraService.MoveToTransformAsync(_currentState, destroyCancellationToken);
         Debug.Log($"--- New State: {_currentState} ---");
     }
 
