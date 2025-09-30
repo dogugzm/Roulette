@@ -20,7 +20,7 @@ public class WheelController : MonoBehaviour, IWheelController
     public event Action<int> OnSpinComplete;
 
     private bool isSpinning = false;
-    
+
     public void Spin()
     {
         if (isSpinning)
