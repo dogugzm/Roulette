@@ -1,21 +1,37 @@
 using System;
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using Services;
 using UnityEngine;
+using Object = UnityEngine.Object;
+using Random = UnityEngine.Random;
 
 namespace UI
 {
     interface IChipManager
     {
-        int CurrentChipValue { get; }
-        void SetCurrentChipValue(int value);
-        Action<Transform> OnChipPlaced { get; set; }
+        GameObject TryPlaceChip(Transform parent);
+        Chip CurrentChip { get; set; }
     }
 
     public class ChipManager : IChipManager
     {
         private IBettingManager _bettingManager;
+        private IChipManager _chipManagerImplementation;
+        public Chip CurrentChip { get; set; }
 
-        public int CurrentChipValue { get; private set; } = -1;
+        private List<GameObject> _placedChips = new();
+
+        [CanBeNull]
+        public GameObject TryPlaceChip(Transform parent)
+        {
+            if (CurrentChip == null) return null;
+
+            var chipInstance = Object.Instantiate(CurrentChip.ChipPrefab, parent);
+            _placedChips.Add(chipInstance);
+            return chipInstance;
+        }
+
 
         public ChipManager(IBettingManager bettingManager)
         {
@@ -25,13 +41,6 @@ namespace UI
                 _bettingManager.OnBetsCleared += HandleBetsCleared;
             }
         }
-
-        public void SetCurrentChipValue(int value)
-        {
-            CurrentChipValue = value;
-        }
-
-        public Action<Transform> OnChipPlaced { get; set; }
 
         private void Dispose()
         {
@@ -43,6 +52,12 @@ namespace UI
 
         private void HandleBetsCleared()
         {
+            foreach (var chip in _placedChips)
+            {
+                Object.Destroy(chip);
+            }
+
+            _placedChips.Clear();
         }
     }
 }

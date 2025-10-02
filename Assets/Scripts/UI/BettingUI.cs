@@ -43,7 +43,6 @@ namespace UI
             _chipManager = ServiceLocator.Get<IChipManager>();
             _payoutManager = ServiceLocator.Get<IPayoutManager>();
 
-            _chipManager.OnChipPlaced += OnChipPlaced;
             _payoutManager.OnWinningBets += OnWinningBets;
             _bettingManager.OnBetsCleared += OnBetsCleared;
             _bettingManager.OnRestoreCompleted += OnRestoreCompleted;
@@ -96,15 +95,6 @@ namespace UI
             }
         }
 
-        private void OnChipPlaced(Transform data)
-        {
-            //TODO: Object pooling
-            // y offset to avoid z-fighting
-
-            Vector3 offset = new Vector3(Random.Range(-0.1f, 0.1f), 0, Random.Range(-0.1f, 0.1f));
-            Instantiate(_selectedChipView.Chip.ChipPrefab, data.position + offset, Quaternion.identity, data);
-        }
-
         void Update()
         {
             // if (_bettingManager != null)
@@ -115,8 +105,7 @@ namespace UI
 
         private void SelectChip(int value)
         {
-            _chipManager.SetCurrentChipValue(value);
-            _selectedChipView = chipViews.FirstOrDefault(chipView => chipView.Chip.Value == value);
+            _chipManager.CurrentChip = chipViews.FirstOrDefault(chipView => chipView.Chip.Value == value)?.Chip;
             foreach (var chipUIView in chipViews)
             {
                 bool isSelected = chipUIView.Chip.Value == value;

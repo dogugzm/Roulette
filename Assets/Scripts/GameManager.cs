@@ -98,6 +98,7 @@ public class GameManager : MonoBehaviour
         await Task.Delay(3000);
 
         Debug.Log("Payouts complete. Clearing bets for the next round.");
+        _bettingManager.ClearBets();
         ChangeState(GameState.Betting);
     }
 
