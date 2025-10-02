@@ -12,13 +12,19 @@ namespace UI
     {
         GameObject TryPlaceChip(Transform parent);
         Chip CurrentChip { get; set; }
+        void RestoreState(IReadOnlyList<Bet> bets);
     }
 
     public class ChipManager : IChipManager
     {
         private IBettingManager _bettingManager;
-        private IChipManager _chipManagerImplementation;
+        private ISfxManager _sfxManager;
+
         public Chip CurrentChip { get; set; }
+
+        public void RestoreState(IReadOnlyList<Bet> bets)
+        {
+        }
 
         private List<GameObject> _placedChips = new();
 
@@ -26,16 +32,17 @@ namespace UI
         public GameObject TryPlaceChip(Transform parent)
         {
             if (CurrentChip == null) return null;
-
+            _sfxManager?.PlaySound(SFXConstants.ChipPut, Random.Range(0.8f, 1.2f));
             var chipInstance = Object.Instantiate(CurrentChip.ChipPrefab, parent);
             _placedChips.Add(chipInstance);
             return chipInstance;
         }
 
 
-        public ChipManager(IBettingManager bettingManager)
+        public ChipManager(IBettingManager bettingManager, ISfxManager sfxManager)
         {
             _bettingManager = bettingManager;
+            _sfxManager = sfxManager;
             if (_bettingManager != null)
             {
                 _bettingManager.OnBetsCleared += HandleBetsCleared;

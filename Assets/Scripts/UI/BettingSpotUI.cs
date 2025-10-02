@@ -44,7 +44,7 @@ namespace UI
 
             int[] betNumbers = (betType >= BetType.Red) ? null : numbers;
 
-            bool success = _bettingManager.PlaceBet(chipValue, betType, betNumbers);
+            bool success = _bettingManager.TryPlaceBet(chipValue, betType, betNumbers);
 
             if (success)
             {

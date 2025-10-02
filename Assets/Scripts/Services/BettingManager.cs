@@ -18,7 +18,7 @@ namespace Services
             _playerBalance = startingBalance;
         }
 
-        public bool PlaceBet(int amount, BetType betType, int[] numbers)
+        public bool TryPlaceBet(int amount, BetType betType, int[] numbers)
         {
             if (amount > _playerBalance)
             {

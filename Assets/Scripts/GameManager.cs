@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private IStatisticService _statisticService;
     private ICameraService _cameraService;
     private ISaveLoadService _saveLoadService;
+    private ISfxManager _sfxManager;
 
     void Start()
     {
@@ -31,7 +32,9 @@ public class GameManager : MonoBehaviour
         _statisticService = ServiceLocator.Get<IStatisticService>();
         _cameraService = ServiceLocator.Get<ICameraService>();
         _saveLoadService = ServiceLocator.Get<ISaveLoadService>();
+        _sfxManager = ServiceLocator.Get<ISfxManager>();
 
+        _sfxManager.PlaySound(SFXConstants.BackgroundMusic, 0.2f);
         _wheelController.OnSpinComplete += OnWheelSpinComplete;
 
         LoadGame();

@@ -20,6 +20,13 @@ public class WheelController : MonoBehaviour, IWheelController
     public event Action<int> OnSpinComplete;
 
     private bool isSpinning = false;
+    private ISfxManager _sfxManager;
+
+    private void Start()
+    {
+        _sfxManager = ServiceLocator.Get<ISfxManager>();
+    }
+
 
     public void Spin()
     {
@@ -34,6 +41,7 @@ public class WheelController : MonoBehaviour, IWheelController
 
     private async void RunBallRoutineAsync(int? deterministicNumber = null)
     {
+        _sfxManager.PlaySound(SFXConstants.BallSpin, 0.3f);
         isSpinning = true;
         float elapsed = 0f;
         float angle = 0f;
@@ -67,6 +75,8 @@ public class WheelController : MonoBehaviour, IWheelController
             transform.position = wheelCenter.position + new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * orbitRadius;
             await Task.Yield();
         }
+
+        _ = _sfxManager.StopSoundFadedAsync(SFXConstants.BallSpin, 0.5f);
 
         for (int i = 0; i < randomJumps; i++)
         {
@@ -103,6 +113,7 @@ public class WheelController : MonoBehaviour, IWheelController
             await Task.Yield();
         }
 
+        _sfxManager.PlaySound(SFXConstants.BallDrop);
         transform.position = target.position + randomOffset;
     }
 }
