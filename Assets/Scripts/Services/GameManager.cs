@@ -33,7 +33,7 @@ namespace Services
         private IAudioManager _audioManager;
         private IChipManager _chipManager;
 
-        void Start()
+        async void Start()
         {
             _bettingManager = ServiceLocator.Get<IBettingManager>();
             _payoutManager = ServiceLocator.Get<IPayoutManager>();
@@ -43,6 +43,8 @@ namespace Services
             _saveLoadService = ServiceLocator.Get<ISaveLoadService>();
             _audioManager = ServiceLocator.Get<IAudioManager>();
             _chipManager = ServiceLocator.Get<IChipManager>();
+
+            await _chipManager.InitializeAsync();
 
             _audioManager.PlaySound(SFXConstants.BackgroundMusic, 0.2f);
             _wheelController.OnSpinComplete += OnWheelSpinComplete;

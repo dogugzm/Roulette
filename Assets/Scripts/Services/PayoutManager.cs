@@ -12,6 +12,7 @@ namespace Services
     public class PayoutManager : IPayoutManager
     {
         public event Action<List<Bet>> OnWinningBets;
+        public Action OnPayoutCompleted { get; set; }
         private readonly IBettingManager _bettingManager;
         private readonly IStatisticService _statisticService;
         private readonly IAudioManager _audioManager;
@@ -61,6 +62,8 @@ namespace Services
 
             var profit = totalWinnings - totalBetAmount;
             _statisticService.RecordSpin(profit > 0, profit);
+
+            OnPayoutCompleted?.Invoke();
 
             Debug.Log($"Winning Number: {winningNumber}. Total Payout: {totalWinnings}");
         }

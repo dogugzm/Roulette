@@ -18,7 +18,7 @@ namespace UI
 
         [SerializeField] private GameObject clickEffect;
 
-        private const float ChipYOffset = 0.3f;
+        private const float ChipYOffset = 0.15f;
 
         private IBettingManager _bettingManager;
         private IChipManager _chipManager;

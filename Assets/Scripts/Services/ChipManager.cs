@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Models;
 using ScriptableObject;
@@ -15,6 +16,32 @@ namespace Services
         private IAudioManager _audioManager;
         private readonly ChipDatabaseSO _chipDatabase;
 
+        private class PlacedChip
+        {
+            public string ChipId;
+            public ChipInstance Instance;
+        }
+
+        private readonly Dictionary<string, IPoolService<ChipInstance>> _chipPools = new();
+
+        public async Task InitializeAsync()
+        {
+            foreach (var chipSo in _chipDatabase.GetAllChips())
+            {
+                var pool = new PoolService<ChipInstance>();
+                var chipPrefab = chipSo.ChipPrefab.GetComponent<ChipInstance>();
+                if (chipPrefab != null)
+                {
+                    await pool.InitializeAsync(chipPrefab, 10); // Initial pool size of 10
+                    _chipPools[chipSo.Id] = pool;
+                }
+                else
+                {
+                    Debug.LogError($"Chip prefab for {chipSo.Id} is missing ChipInstance component!");
+                }
+            }
+        }
+
         public ChipSO CurrentChipSo { get; set; }
 
         public void RestoreState(string currentChipId)
@@ -28,7 +55,7 @@ namespace Services
             CurrentChipSo = _chipDatabase.GetChipByID(currentChipId);
         }
 
-        private List<GameObject> _placedChips = new();
+        private List<PlacedChip> _placedChips = new();
 
         public GameObject TryPlaceChip(Transform parent)
         {
@@ -38,17 +65,18 @@ namespace Services
 
         public GameObject PlaceChipById(string chipId, Transform parent)
         {
-            var chipSo = _chipDatabase.GetChipByID(chipId);
-            if (chipSo == null)
+            if (!_chipPools.TryGetValue(chipId, out var pool))
             {
-                Debug.LogWarning($"Chip with id {chipId} not found in database");
+                Debug.LogError($"No pool found for chip id {chipId}");
                 return null;
             }
 
             _audioManager?.PlaySound(SFXConstants.ChipPut, Random.Range(0.8f, 1.2f));
-            var chipInstance = Object.Instantiate(chipSo.ChipPrefab, parent);
-            _placedChips.Add(chipInstance);
-            return chipInstance;
+            var chipInstance = pool.Get();
+            chipInstance.transform.SetParent(parent, false);
+
+            _placedChips.Add(new PlacedChip { ChipId = chipId, Instance = chipInstance });
+            return chipInstance.gameObject;
         }
 
 
@@ -75,7 +103,10 @@ namespace Services
         {
             foreach (var chip in _placedChips)
             {
-                Object.Destroy(chip);
+                if (_chipPools.TryGetValue(chip.ChipId, out var pool))
+                {
+                    pool.Return(chip.Instance);
+                }
             }
 
             _placedChips.Clear();

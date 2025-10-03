@@ -45,6 +45,7 @@ namespace Services
         public void AwardWinnings(int amount)
         {
             _playerBalance += amount;
+            
             Debug.Log($"Awarded {amount}. New balance: {_playerBalance}");
         }
 

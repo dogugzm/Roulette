@@ -47,12 +47,13 @@ namespace UI
             _payoutManager = ServiceLocator.Get<IPayoutManager>();
 
             _payoutManager.OnWinningBets += OnWinningBets;
+            _payoutManager.OnPayoutCompleted += UpdateBalanceText;
             _bettingManager.OnBetsCleared += OnBetsCleared;
-            _bettingManager.OnBetsPlaced += BettingManagerOnOnBetsPlaced;
+            _bettingManager.OnBetsPlaced += UpdateBalanceText;
 
             _bettingManager.OnRestoreCompleted += OnRestoreCompleted;
             spinButton.onClick.AddListener(SpinButtonPressed);
-            BettingManagerOnOnBetsPlaced();
+            UpdateBalanceText();
 
             foreach (var chipUIView in chipViews)
             {
@@ -63,7 +64,7 @@ namespace UI
             }
         }
 
-        private void BettingManagerOnOnBetsPlaced()
+        private void UpdateBalanceText()
         {
             playerBalanceText.text = _bettingManager.PlayerBalance.ToString();
         }
