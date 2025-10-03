@@ -14,21 +14,12 @@ public static class SFXConstants
     public const string BallDrop = "ball_drop";
 }
 
-public interface ISfxManager
-{
-    void PlaySound(string key, float volume = 1f);
-    void StopSound(string key);
-    void StopAllSounds();
-    void SetVolume(string key, float volume);
-    Task StopSoundFadedAsync(string key, float fadeDuration);
-}
-
-public class SfxManager : ISfxManager
+public class AudioManager : IAudioManager
 {
     private readonly Dictionary<SoundDatabaseSO.AudioChannel, AudioSource> _sources;
     private readonly SoundDatabaseSO _soundDatabase;
 
-    public SfxManager(SoundDatabaseSO soundDatabase, AudioSource musicSource, AudioSource fxSource)
+    public AudioManager(SoundDatabaseSO soundDatabase, AudioSource musicSource, AudioSource fxSource)
     {
         _soundDatabase = soundDatabase;
 

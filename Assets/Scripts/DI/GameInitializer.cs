@@ -24,8 +24,8 @@ namespace DI
             var payoutManager = new PayoutManager(bettingManager, statisticService);
             ServiceLocator.Register<IPayoutManager>(payoutManager);
 
-            var audioService = new SfxManager(soundDatabase, musicSource, fxSource);
-            ServiceLocator.Register<ISfxManager>(audioService);
+            var audioService = new AudioManager(soundDatabase, musicSource, fxSource);
+            ServiceLocator.Register<IAudioManager>(audioService);
 
             var chipManager = new UI.ChipManager(bettingManager, audioService);
             ServiceLocator.Register<UI.IChipManager>(chipManager);

@@ -8,19 +8,12 @@ using Random = UnityEngine.Random;
 
 namespace UI
 {
-    interface IChipManager
-    {
-        GameObject TryPlaceChip(Transform parent);
-        Chip CurrentChip { get; set; }
-        void RestoreState(IReadOnlyList<Bet> bets);
-    }
-
     public class ChipManager : IChipManager
     {
         private IBettingManager _bettingManager;
-        private ISfxManager _sfxManager;
+        private IAudioManager _audioManager;
 
-        public Chip CurrentChip { get; set; }
+        public ChipSO CurrentChipSo { get; set; }
 
         public void RestoreState(IReadOnlyList<Bet> bets)
         {
@@ -31,18 +24,18 @@ namespace UI
         [CanBeNull]
         public GameObject TryPlaceChip(Transform parent)
         {
-            if (CurrentChip == null) return null;
-            _sfxManager?.PlaySound(SFXConstants.ChipPut, Random.Range(0.8f, 1.2f));
-            var chipInstance = Object.Instantiate(CurrentChip.ChipPrefab, parent);
+            if (CurrentChipSo == null) return null;
+            _audioManager?.PlaySound(SFXConstants.ChipPut, Random.Range(0.8f, 1.2f));
+            var chipInstance = Object.Instantiate(CurrentChipSo.ChipPrefab, parent);
             _placedChips.Add(chipInstance);
             return chipInstance;
         }
 
 
-        public ChipManager(IBettingManager bettingManager, ISfxManager sfxManager)
+        public ChipManager(IBettingManager bettingManager, IAudioManager audioManager)
         {
             _bettingManager = bettingManager;
-            _sfxManager = sfxManager;
+            _audioManager = audioManager;
             if (_bettingManager != null)
             {
                 _bettingManager.OnBetsCleared += HandleBetsCleared;

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Chip", menuName = "Roulette/Chip")]
-public class Chip : ScriptableObject
+public class ChipSO : ScriptableObject
 {
     [SerializeField] private int value;
     [SerializeField] private Sprite sprite;

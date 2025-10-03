@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Services
 {
+    
     public class BettingManager : IBettingManager
     {
         public event Action OnBetsCleared;

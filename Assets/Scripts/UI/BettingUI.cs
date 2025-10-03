@@ -16,7 +16,7 @@ namespace UI
         [SerializeField] private GameManager gameManager;
 
         [SerializeField] private Button spinButton;
-        [SerializeField] private List<NumberUI> numberUIs;
+        [SerializeField] private List<NumberUIView> numberUIs;
         [SerializeField] private List<BettingSpotUI> bettingSpotUIs;
 
         private IBettingManager _bettingManager;
@@ -52,7 +52,7 @@ namespace UI
             {
                 _ = chipUIView.InitAsync(new ChipUIView.Data()
                 {
-                    clickAction = () => SelectChip(chipUIView.Chip.Value)
+                    clickAction = () => SelectChip(chipUIView.ChipSo.Value)
                 });
             }
         }
@@ -105,10 +105,10 @@ namespace UI
 
         private void SelectChip(int value)
         {
-            _chipManager.CurrentChip = chipViews.FirstOrDefault(chipView => chipView.Chip.Value == value)?.Chip;
+            _chipManager.CurrentChipSo = chipViews.FirstOrDefault(chipView => chipView.ChipSo.Value == value)?.ChipSo;
             foreach (var chipUIView in chipViews)
             {
-                bool isSelected = chipUIView.Chip.Value == value;
+                bool isSelected = chipUIView.ChipSo.Value == value;
                 chipUIView.SetSelected(isSelected);
             }
 

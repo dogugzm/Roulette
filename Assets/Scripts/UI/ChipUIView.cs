@@ -12,20 +12,20 @@ namespace UI
             public Action clickAction;
         }
 
-        [SerializeField] private Chip chip;
+        [SerializeField] private ChipSO chipSo;
         [SerializeField] private Button button;
         [SerializeField] private Image image;
 
-        private ISfxManager _sfxManager;
-        public Chip Chip => chip;
+        private IAudioManager _audioManager;
+        public ChipSO ChipSo => chipSo;
 
         public async Task InitAsync(Data data)
         {
-            image.sprite = chip.Sprite;
-            _sfxManager = ServiceLocator.Get<ISfxManager>();
+            image.sprite = chipSo.Sprite;
+            _audioManager = ServiceLocator.Get<IAudioManager>();
             button.onClick.AddListener(() =>
             {
-                _sfxManager.PlaySound(SFXConstants.Click);
+                _audioManager.PlaySound(SFXConstants.Click);
                 data.clickAction?.Invoke();
             });
         }

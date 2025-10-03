@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class NumberUI : MonoBehaviour
+    public class NumberUIView : MonoBehaviour
     {
         public int number;
         private Image _image;

@@ -34,7 +34,7 @@ namespace UI
 
         private void OnSpotClicked()
         {
-            int chipValue = _chipManager.CurrentChip.Value;
+            int chipValue = _chipManager.CurrentChipSo.Value;
 
             if (chipValue <= 0)
             {

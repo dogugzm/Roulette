@@ -1,19 +1,16 @@
-using System;
 
-namespace Models
+using UnityEngine;
+
+public class Bet
 {
-    [Serializable]
-    public class Bet
-    {
-        public int Amount;
-        public BetType BetType;
-        public int[] Numbers;
+    public int Amount { get; private set; }
+    public BetType BetType { get; private set; }
+    public int[] Numbers { get; private set; }
 
-        public Bet(int amount, BetType betType, int[] numbers)
-        {
-            Amount = amount;
-            BetType = betType;
-            Numbers = numbers;
-        }
+    public Bet(int amount, BetType betType, int[] numbers)
+    {
+        Amount = amount;
+        BetType = betType;
+        Numbers = numbers;
     }
 }
