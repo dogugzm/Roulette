@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Chip 4
   m_EditorClassIdentifier: 
   value: 25
-  sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
-  chipPrefab: {fileID: 264955502183059244, guid: 3621e830368b04b7895c11d4f2d069c2, type: 3}
+  sprite: {fileID: -119296364, guid: 9a63c9309f5c84928811d7b7f2d1a4ee, type: 3}
+  chipPrefab: {fileID: 1625596879640519725, guid: eb71a8a965c3b4f2ab6d4c35c956f9a9, type: 3}

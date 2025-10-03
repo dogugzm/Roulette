@@ -31,8 +31,7 @@ namespace Wheel
             _audioManager = ServiceLocator.Get<IAudioManager>();
         }
 
-
-        public void Spin()
+        public void Spin(int? number = null)
         {
             if (isSpinning)
             {
@@ -40,7 +39,7 @@ namespace Wheel
                 return;
             }
 
-            RunBallRoutineAsync(1);
+            RunBallRoutineAsync(number);
         }
 
         private async void RunBallRoutineAsync(int? deterministicNumber = null)

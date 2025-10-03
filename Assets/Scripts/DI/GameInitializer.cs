@@ -21,6 +21,8 @@ namespace DI
 
         private void Awake()
         {
+            ServiceLocator.Register<IWheelController>(wheelController);
+
             ServiceLocator.Register<ISaveLoadService>(new SaveLoadService());
 
             var bettingManager = new BettingManager(1000);
@@ -39,7 +41,6 @@ namespace DI
             var chipManager = new ChipManager(bettingManager, audioService);
             ServiceLocator.Register<IChipManager>(chipManager);
 
-            ServiceLocator.Register(wheelController);
 
             var cameraService = new CameraService(cameraPositions);
             ServiceLocator.Register<ICameraService>(cameraService);

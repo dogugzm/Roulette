@@ -67,9 +67,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -709053698, guid: 9a63c9309f5c84928811d7b7f2d1a4ee, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38f820d2d9ca4d20b8fc83aa9d60ac21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chip: {fileID: 11400000, guid: ad94ccee5eb44482d9e30c1c1bed0578, type: 2}
+  chipSo: {fileID: 0}
   button: {fileID: 2704119039905175315}
   image: {fileID: 3719784517006422637}
 --- !u!114 &2704119039905175315

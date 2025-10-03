@@ -46,10 +46,9 @@ namespace Services
                 }
             }
 
-            OnWinningBets?.Invoke(winningBets);
-
             if (totalWinnings > 0)
             {
+                OnWinningBets?.Invoke(winningBets);
                 _ = WinnerEffectAsync(_winnerEffect);
                 _audioManager.PlaySound(SFXConstants.Success);
                 _bettingManager.AwardWinnings(totalWinnings);

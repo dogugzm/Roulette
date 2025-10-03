@@ -35,12 +35,12 @@ namespace UI
             _chipManager = ServiceLocator.Get<IChipManager>();
 
             _bettingManager.OnBetsCleared += () => _chipAmount = 0;
-
             _bettingManager.RegisterBettingSpot(this);
 
             _button = GetComponent<Button>();
             _button.onClick.AddListener(OnSpotClicked);
         }
+
 
         private void OnSpotClicked()
         {
@@ -52,7 +52,7 @@ namespace UI
                 return;
             }
 
-            int[] betNumbers = (betType >= BetType.Red) ? null : numbers;
+            int[] betNumbers = betType is >= BetType.Red and <= BetType.High ? null : numbers;
 
             var success = _bettingManager.TryPlaceBet(chipValue, betType, betNumbers);
             _ = EffectBehavior();

@@ -4,7 +4,7 @@ namespace Wheel
 {
     public interface IWheelController
     {
-        void Spin();
+        void Spin(int? number);
         event Action<int> OnSpinComplete;
     }
 }

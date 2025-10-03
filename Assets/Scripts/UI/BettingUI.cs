@@ -5,6 +5,7 @@ using DI;
 using Models;
 using Services;
 using Services.Interfaces;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -14,7 +15,7 @@ namespace UI
 {
     public class BettingUI : MonoBehaviour
     {
-        [SerializeField] private Text playerBalanceText;
+        [SerializeField] private TMP_Text playerBalanceText;
         [SerializeField] private List<ChipUIView> chipViews;
         [SerializeField] private GameManager gameManager;
 
@@ -25,7 +26,7 @@ namespace UI
         private IChipManager _chipManager;
         private IPayoutManager _payoutManager;
         private ChipUIView _selectedChipView;
-    
+
 
         public void SpinButtonPressed()
         {
@@ -47,8 +48,11 @@ namespace UI
 
             _payoutManager.OnWinningBets += OnWinningBets;
             _bettingManager.OnBetsCleared += OnBetsCleared;
+            _bettingManager.OnBetsPlaced += BettingManagerOnOnBetsPlaced;
+
             _bettingManager.OnRestoreCompleted += OnRestoreCompleted;
             spinButton.onClick.AddListener(SpinButtonPressed);
+            BettingManagerOnOnBetsPlaced();
 
             foreach (var chipUIView in chipViews)
             {
@@ -59,12 +63,14 @@ namespace UI
             }
         }
 
+        private void BettingManagerOnOnBetsPlaced()
+        {
+            playerBalanceText.text = _bettingManager.PlayerBalance.ToString();
+        }
+
         private void OnRestoreCompleted(int balance, IReadOnlyList<Bet> bets)
         {
-            //playerBalanceText.text = $"Balance: {balance}";
-            foreach (var bet in bets)
-            {
-            }
+            playerBalanceText.text = balance.ToString();
         }
 
         private void OnDestroy()

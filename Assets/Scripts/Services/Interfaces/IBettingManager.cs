@@ -9,6 +9,7 @@ namespace Services.Interfaces
     public interface IBettingManager
     {
         event Action OnBetsCleared;
+        event Action OnBetsPlaced;
         int PlayerBalance { get; }
         bool TryPlaceBet(int amount, BetType betType, int[] numbers);
         void ClearBets();

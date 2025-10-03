@@ -11,6 +11,7 @@ namespace Services
     public class BettingManager : IBettingManager
     {
         public event Action OnBetsCleared;
+        public event Action OnBetsPlaced;
 
         private List<Bet> _currentBets = new();
         private int _playerBalance;
@@ -35,6 +36,7 @@ namespace Services
             _playerBalance -= amount;
             Bet bet = new Bet(amount, betType, numbers);
             _currentBets.Add(bet);
+            OnBetsPlaced?.Invoke();
             Debug.Log($"Placed bet of {bet.Amount} on {bet.BetType}. Current balance: {_playerBalance}");
             return true;
         }

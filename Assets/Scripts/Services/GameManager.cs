@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DI;
 using Models;
 using Services.Interfaces;
+using UI;
 using UnityEngine;
 using Wheel;
 
@@ -20,6 +21,7 @@ namespace Services
             Payout
         }
 
+        [SerializeField] private DeterministicUI deterministicUI;
         private GameState _currentState;
 
         private IBettingManager _bettingManager;
@@ -44,7 +46,7 @@ namespace Services
             _wheelController.OnSpinComplete += OnWheelSpinComplete;
 
             LoadGame();
-            ChangeState(GameState.Betting);
+            _ = ChangeState(GameState.Betting);
         }
 
         private void OnDestroy()
@@ -84,7 +86,7 @@ namespace Services
 
             // _bettingManager.LockBets();
 
-            _wheelController.Spin();
+            _wheelController.Spin(deterministicUI.SelectedDeterministicValue);
         }
 
         private async void OnWheelSpinComplete(int winningNumber)
