@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c5685242b404d7e810e8bbd19d256a, type: 3}
   m_Name: Chip 2
   m_EditorClassIdentifier: 
+  id: 5
   value: 5
   sprite: {fileID: 1052895496, guid: 9a63c9309f5c84928811d7b7f2d1a4ee, type: 3}
   chipPrefab: {fileID: 1625596879640519725, guid: 65e4bd18fcc2349a7bd80f61bbf7734e, type: 3}

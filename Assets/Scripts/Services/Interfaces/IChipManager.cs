@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace Services.Interfaces
 {
-    interface IChipManager
+    internal interface IChipManager
     {
         GameObject TryPlaceChip(Transform parent);
         ChipSO CurrentChipSo { get; set; }
-        void RestoreState(ChipSO currentChipSo);
+        void RestoreState(string currentChipId);
+        GameObject PlaceChipById(string chipId, Transform parent);
     }
 }

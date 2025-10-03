@@ -11,7 +11,7 @@ namespace Services.Interfaces
         event Action OnBetsCleared;
         event Action OnBetsPlaced;
         int PlayerBalance { get; }
-        bool TryPlaceBet(int amount, BetType betType, int[] numbers);
+        bool TryPlaceBet(int amount, BetType betType, int[] numbers, string chipId);
         void ClearBets();
         void AwardWinnings(int amount);
         IReadOnlyList<Bet> GetCurrentBets();

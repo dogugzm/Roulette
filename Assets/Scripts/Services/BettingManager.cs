@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Helper;
 using Models;
 using Services.Interfaces;
@@ -25,7 +26,7 @@ namespace Services
             _playerBalance = startingBalance;
         }
 
-        public bool TryPlaceBet(int amount, BetType betType, int[] numbers)
+        public bool TryPlaceBet(int amount, BetType betType, int[] numbers, string chipId)
         {
             if (amount > _playerBalance)
             {
@@ -34,12 +35,12 @@ namespace Services
             }
 
             _playerBalance -= amount;
-            Bet bet = new Bet(amount, betType, numbers);
+            Bet bet = new Bet(amount, betType, numbers, chipId);
             _currentBets.Add(bet);
             OnBetsPlaced?.Invoke();
-            Debug.Log($"Placed bet of {bet.Amount} on {bet.BetType}. Current balance: {_playerBalance}");
             return true;
         }
+
 
         public void AwardWinnings(int amount)
         {
@@ -73,19 +74,42 @@ namespace Services
 
             if (bets != null)
             {
-                // _currentBets = new List<Bet>(bets);
-                // // Recreate visual chips on betting spots if needed
-                // foreach (var bet in bets)
-                // {
-                //     foreach (var spot in _registeredBettingSpots)
-                //     {
-                //         if (spot.BetType == bet.BetType)
-                //         {
-                //             
-                //             spot.BehaveSpotClick();
-                //         }
-                //     }
-                // }
+                _currentBets = new List<Bet>(bets);
+                foreach (var bet in bets)
+                {
+                    foreach (var spot in _registeredBettingSpots)
+                    {
+                        if (spot.BetType == bet.BetType)
+                        {
+                            bool numbersMatch = false;
+                            if (bet.BetType <= BetType.SixLine) // Inside bets
+                            {
+                                if (bet.Numbers != null && spot.Numbers != null &&
+                                    bet.Numbers.Length == spot.Numbers.Count)
+                                {
+                                    var betNumbers = new List<int>(bet.Numbers);
+                                    var spotNumbers = new List<int>(spot.Numbers);
+                                    betNumbers.Sort();
+                                    spotNumbers.Sort();
+
+                                    if (betNumbers.SequenceEqual(spotNumbers))
+                                    {
+                                        numbersMatch = true;
+                                    }
+                                }
+                            }
+                            else // Outside bets
+                            {
+                                numbersMatch = true; // BetType match is enough
+                            }
+
+                            if (numbersMatch)
+                            {
+                                spot.PlaceChipVisual(bet.ChipId);
+                            }
+                        }
+                    }
+                }
             }
 
             OnRestoreCompleted?.Invoke(_playerBalance, GetCurrentBets());

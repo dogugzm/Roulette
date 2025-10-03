@@ -7,6 +7,7 @@ namespace Models
     public class GameData
     {
         public int PlayerBalance;
+        public string CurrentChipId;
         public List<Bet> CurrentBets;
         public StatisticData Statistics;
     }

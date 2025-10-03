@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DI;
 using Helper;
-using Services;
 using Services.Interfaces;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,9 +43,8 @@ namespace UI
 
         private void OnSpotClicked()
         {
-            int chipValue = _chipManager.CurrentChipSo.Value;
-
-            if (chipValue <= 0)
+            var currentChip = _chipManager.CurrentChipSo;
+            if (currentChip == null || currentChip.Value <= 0)
             {
                 Debug.LogWarning("Please select a chip first!");
                 return;
@@ -54,21 +52,26 @@ namespace UI
 
             int[] betNumbers = betType is >= BetType.Red and <= BetType.High ? null : numbers;
 
-            var success = _bettingManager.TryPlaceBet(chipValue, betType, betNumbers);
+            var success = _bettingManager.TryPlaceBet(currentChip.Value, betType, betNumbers, currentChip.Id);
             _ = EffectBehavior();
 
             if (success)
             {
-                var chip = _chipManager.TryPlaceChip(transform);
-                if (chip != null)
-                {
-                    _chipAmount++;
-                    chip.transform.position += new Vector3(
-                        Random.Range(-0.1f, 0.1f),
-                        ChipYOffset * _chipAmount,
-                        Random.Range(-0.1f, 0.1f)
-                    );
-                }
+                PlaceChipVisual(currentChip.Id);
+            }
+        }
+
+        public void PlaceChipVisual(string chipId)
+        {
+            var chip = _chipManager.PlaceChipById(chipId, transform);
+            if (chip != null)
+            {
+                _chipAmount++;
+                chip.transform.position += new Vector3(
+                    Random.Range(-0.1f, 0.1f),
+                    ChipYOffset * _chipAmount,
+                    Random.Range(-0.1f, 0.1f)
+                );
             }
         }
 
@@ -79,9 +82,6 @@ namespace UI
             clickEffect.gameObject.SetActive(false);
         }
 
-        public void BehaveSpotClick()
-        {
-            OnSpotClicked();
-        }
+
     }
 }

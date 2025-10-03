@@ -31,6 +31,7 @@ namespace Services
         private ICameraService _cameraService;
         private ISaveLoadService _saveLoadService;
         private IAudioManager _audioManager;
+        private IChipManager _chipManager;
 
         void Start()
         {
@@ -41,12 +42,19 @@ namespace Services
             _cameraService = ServiceLocator.Get<ICameraService>();
             _saveLoadService = ServiceLocator.Get<ISaveLoadService>();
             _audioManager = ServiceLocator.Get<IAudioManager>();
+            _chipManager = ServiceLocator.Get<IChipManager>();
 
             _audioManager.PlaySound(SFXConstants.BackgroundMusic, 0.2f);
             _wheelController.OnSpinComplete += OnWheelSpinComplete;
+            _bettingManager.OnBetsPlaced += BettingManagerOnOnBetsPlaced;
 
             LoadGame();
             _ = ChangeState(GameState.Betting);
+        }
+
+        private void BettingManagerOnOnBetsPlaced()
+        {
+            SaveGame();
         }
 
         private void OnDestroy()
@@ -123,7 +131,8 @@ namespace Services
             {
                 PlayerBalance = _bettingManager.PlayerBalance,
                 CurrentBets = new List<Bet>(_bettingManager.GetCurrentBets()),
-                Statistics = statisticData
+                Statistics = statisticData,
+                CurrentChipId = _chipManager.CurrentChipSo?.Id
             };
 
             _saveLoadService.Save("GameData", gameData);
@@ -136,6 +145,7 @@ namespace Services
 
             var gameData = _saveLoadService.Load<GameData>("GameData");
 
+            _chipManager.RestoreState(gameData.CurrentChipId);
             _bettingManager.RestoreState(gameData.PlayerBalance, gameData.CurrentBets);
             _statisticService.RestoreState(gameData.Statistics);
 

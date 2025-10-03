@@ -18,6 +18,7 @@ namespace DI
 
         [Header("EFFECTS")] [SerializeField] private GameObject winnerEffect;
         [SerializeField] private GameObject loseEffect;
+        [SerializeField] private ChipDatabaseSO chipDatabase;
 
         private void Awake()
         {
@@ -38,7 +39,7 @@ namespace DI
                 new PayoutManager(bettingManager, statisticService, winnerEffect, audioService, loseEffect);
             ServiceLocator.Register<IPayoutManager>(payoutManager);
 
-            var chipManager = new ChipManager(bettingManager, audioService);
+            var chipManager = new ChipManager(bettingManager, audioService, chipDatabase);
             ServiceLocator.Register<IChipManager>(chipManager);
 
 

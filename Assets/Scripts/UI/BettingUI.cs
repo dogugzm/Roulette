@@ -71,6 +71,11 @@ namespace UI
         private void OnRestoreCompleted(int balance, IReadOnlyList<Bet> bets)
         {
             playerBalanceText.text = balance.ToString();
+            var currentChip = _chipManager.CurrentChipSo;
+            if (currentChip != null)
+            {
+                SelectChip(currentChip.Value);
+            }
         }
 
         private void OnDestroy()
@@ -101,14 +106,6 @@ namespace UI
                     }
                 }
             }
-        }
-
-        void Update()
-        {
-            // if (_bettingManager != null)
-            // {
-            //     playerBalanceText.text = $"Balance: {_bettingManager.PlayerBalance}";
-            // }
         }
 
         private void SelectChip(int value)

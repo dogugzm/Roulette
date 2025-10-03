@@ -4,6 +4,7 @@ using DI;
 using ScriptableObject;
 using Services;
 using Services.Interfaces;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +20,8 @@ namespace UI
         [SerializeField] private ChipSO chipSo;
         [SerializeField] private Button button;
         [SerializeField] private Image image;
+        [SerializeField] private TMP_Text valueText;
+
 
         private IAudioManager _audioManager;
         public ChipSO ChipSo => chipSo;
@@ -27,6 +30,7 @@ namespace UI
         {
             image.sprite = chipSo.Sprite;
             _audioManager = ServiceLocator.Get<IAudioManager>();
+            valueText.text = chipSo.Value.ToString();
             button.onClick.AddListener(() =>
             {
                 _audioManager.PlaySound(SFXConstants.Click);
