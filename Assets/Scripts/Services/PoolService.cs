@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Services.Interfaces;
 using UnityEngine;
 
-namespace Managers
+namespace Services
 {
     public class PoolService<T> : IPoolService<T> where T : MonoBehaviour
     {

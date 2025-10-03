@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Models;
+using ScriptableObject;
 using UnityEngine;
 
-namespace UI
+namespace Services.Interfaces
 {
     interface IChipManager
     {

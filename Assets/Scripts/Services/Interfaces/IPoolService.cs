@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Managers
+namespace Services.Interfaces
 {
     public interface IPoolService<T> where T : MonoBehaviour
     {

@@ -1,12 +1,13 @@
-using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
-using Services;
+using Models;
+using ScriptableObject;
+using Services.Interfaces;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace UI
+namespace Services
 {
     public class ChipManager : IChipManager
     {

@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface ICameraService
     {

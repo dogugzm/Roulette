@@ -1,7 +1,10 @@
 using System;
 
-public interface IWheelController
+namespace Wheel
 {
-    void Spin();
-    event Action<int> OnSpinComplete;
+    public interface IWheelController
+    {
+        void Spin();
+        event Action<int> OnSpinComplete;
+    }
 }

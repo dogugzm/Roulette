@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Models;
 
-[Serializable]
-public class GameData
+namespace Models
 {
-    public int PlayerBalance;
-    public List<Bet> CurrentBets;
-    public StatisticData Statistics;
+    [Serializable]
+    public class GameData
+    {
+        public int PlayerBalance;
+        public List<Bet> CurrentBets;
+        public StatisticData Statistics;
+    }
 }

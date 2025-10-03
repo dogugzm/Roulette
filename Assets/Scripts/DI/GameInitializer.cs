@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using ScriptableObject;
 using Services;
+using Services.Interfaces;
 using UnityEngine;
+using Wheel;
 
 namespace DI
 {
@@ -27,8 +30,8 @@ namespace DI
             var audioService = new AudioManager(soundDatabase, musicSource, fxSource);
             ServiceLocator.Register<IAudioManager>(audioService);
 
-            var chipManager = new UI.ChipManager(bettingManager, audioService);
-            ServiceLocator.Register<UI.IChipManager>(chipManager);
+            var chipManager = new ChipManager(bettingManager, audioService);
+            ServiceLocator.Register<IChipManager>(chipManager);
 
             IWheelController wheelController = FindObjectOfType<WheelController>();
             ServiceLocator.Register<IWheelController>(wheelController);

@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace Services
+namespace ScriptableObject
 {
     [CreateAssetMenu(fileName = "SoundDatabase", menuName = "Roulette/Sound Database")]
-    public class SoundDatabaseSO : ScriptableObject
+    public class SoundDatabaseSO : UnityEngine.ScriptableObject
     {
         public enum AudioChannel
         {

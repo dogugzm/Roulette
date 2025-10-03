@@ -1,16 +1,19 @@
 
-using UnityEngine;
+using Helper;
 
-public class Bet
+namespace Models
 {
-    public int Amount { get; private set; }
-    public BetType BetType { get; private set; }
-    public int[] Numbers { get; private set; }
-
-    public Bet(int amount, BetType betType, int[] numbers)
+    public class Bet
     {
-        Amount = amount;
-        BetType = betType;
-        Numbers = numbers;
+        public int Amount { get; private set; }
+        public BetType BetType { get; private set; }
+        public int[] Numbers { get; private set; }
+
+        public Bet(int amount, BetType betType, int[] numbers)
+        {
+            Amount = amount;
+            BetType = betType;
+            Numbers = numbers;
+        }
     }
 }

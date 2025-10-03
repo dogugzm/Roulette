@@ -1,64 +1,66 @@
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class RouletteWheel : MonoBehaviour
+namespace Wheel
 {
-    [SerializeField] private Transform wheelPivot;
-    [SerializeField] private float angularSpeed;
-
-    private CancellationTokenSource _cts;
-
-    private void Start()
+    public class RouletteWheel : MonoBehaviour
     {
-        StartSpinning();
-    }
+        [SerializeField] private Transform wheelPivot;
+        [SerializeField] private float angularSpeed;
 
-    public void StartSpinning()
-    {
-        if (wheelPivot == null)
+        private CancellationTokenSource _cts;
+
+        private void Start()
         {
-            Debug.LogWarning("Wheel pivot is not assigned!");
-            return;
+            StartSpinning();
         }
 
-        StopSpinning();
-
-        _cts = new CancellationTokenSource();
-        _ = ContinuousSpin(_cts.Token);
-    }
-
-    private void StopSpinning()
-    {
-        if (_cts is { IsCancellationRequested: false })
+        public void StartSpinning()
         {
-            _cts.Cancel();
-            _cts.Dispose();
-            _cts = null;
-        }
-    }
-
-    public void SetSpeed(float speed)
-    {
-        angularSpeed = speed;
-    }
-
-    private async Task ContinuousSpin(CancellationToken token)
-    {
-        while (!token.IsCancellationRequested)
-        {
-            if (wheelPivot != null)
+            if (wheelPivot == null)
             {
-                wheelPivot.Rotate(0f, angularSpeed * Time.deltaTime, 0f);
+                Debug.LogWarning("Wheel pivot is not assigned!");
+                return;
             }
 
-            await Task.Yield();
-        }
-    }
+            StopSpinning();
 
-    private void OnDestroy()
-    {
-        StopSpinning();
+            _cts = new CancellationTokenSource();
+            _ = ContinuousSpin(_cts.Token);
+        }
+
+        private void StopSpinning()
+        {
+            if (_cts is { IsCancellationRequested: false })
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+                _cts = null;
+            }
+        }
+
+        public void SetSpeed(float speed)
+        {
+            angularSpeed = speed;
+        }
+
+        private async Task ContinuousSpin(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                if (wheelPivot != null)
+                {
+                    wheelPivot.Rotate(0f, angularSpeed * Time.deltaTime, 0f);
+                }
+
+                await Task.Yield();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            StopSpinning();
+        }
     }
 }

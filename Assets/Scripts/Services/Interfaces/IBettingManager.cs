@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Helper;
+using Models;
 
-namespace Services
+namespace Services.Interfaces
 {
     public interface IBettingManager
     {
