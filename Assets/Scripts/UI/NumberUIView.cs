@@ -9,6 +9,7 @@ namespace UI
     {
         public int number;
         private Image _image;
+        [SerializeField] private GameObject highlightEffect;
 
         private void Awake()
         {
@@ -18,13 +19,13 @@ namespace UI
         public void Highlight()
         {
             StopAllCoroutines();
-            StartCoroutine(FadeTo(0.5f, 0.2f));
+            highlightEffect.SetActive(true);
         }
 
         public void Reset()
         {
             StopAllCoroutines();
-            StartCoroutine(FadeTo(0f, 0.2f));
+            highlightEffect.SetActive(false);
         }
 
         private IEnumerator FadeTo(float targetAlpha, float duration)

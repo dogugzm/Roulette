@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Helper;
 using Models;
 using Services.Interfaces;
@@ -13,11 +14,18 @@ namespace Services
         public event Action<List<Bet>> OnWinningBets;
         private readonly IBettingManager _bettingManager;
         private readonly IStatisticService _statisticService;
+        private readonly IAudioManager _audioManager;
+        private readonly GameObject _winnerEffect;
+        private readonly GameObject _loseEffect;
 
-        public PayoutManager(IBettingManager bettingManager, IStatisticService statisticService)
+        public PayoutManager(IBettingManager bettingManager, IStatisticService statisticService,
+            GameObject winnerEffect, IAudioManager audioManager, GameObject loseEffect)
         {
             _bettingManager = bettingManager;
             _statisticService = statisticService;
+            _winnerEffect = winnerEffect;
+            _audioManager = audioManager;
+            _loseEffect = loseEffect;
         }
 
         public void CalculatePayouts(int winningNumber)
@@ -42,13 +50,27 @@ namespace Services
 
             if (totalWinnings > 0)
             {
+                _ = WinnerEffectAsync(_winnerEffect);
+                _audioManager.PlaySound(SFXConstants.Success);
                 _bettingManager.AwardWinnings(totalWinnings);
+            }
+            else
+            {
+                _ = WinnerEffectAsync(_loseEffect);
+                _audioManager.PlaySound(SFXConstants.Lose);
             }
 
             var profit = totalWinnings - totalBetAmount;
             _statisticService.RecordSpin(profit > 0, profit);
 
             Debug.Log($"Winning Number: {winningNumber}. Total Payout: {totalWinnings}");
+        }
+
+        private async Task WinnerEffectAsync(GameObject effect)
+        {
+            effect.SetActive(true);
+            await Task.Delay(4000);
+            effect.SetActive(false);
         }
 
         private bool IsWinner(Bet bet, int winningNumber)

@@ -10,6 +10,8 @@ namespace Services
 {
     public class GameManager : MonoBehaviour
     {
+        private const int PAYOUT_DELAY_TIME = 4000;
+
         public enum GameState
         {
             Idle,
@@ -53,12 +55,12 @@ namespace Services
             }
         }
 
-        private void ChangeState(GameState newState)
+        private async Task ChangeState(GameState newState)
         {
             if (_currentState == newState) return;
 
             _currentState = newState;
-            _cameraService.MoveToTransformAsync(_currentState, destroyCancellationToken);
+            await _cameraService.MoveToTransformAsync(_currentState, destroyCancellationToken);
             Debug.Log($"--- New State: {_currentState} ---");
         }
 
@@ -88,25 +90,20 @@ namespace Services
         private async void OnWheelSpinComplete(int winningNumber)
         {
             Debug.Log($"Wheel stopped. Winning number is: {winningNumber}");
-
-            _statisticService.RecordWinningNumber(winningNumber);
-            _payoutManager.CalculatePayouts(winningNumber);
-
+            await PayoutRoutine(winningNumber);
             SaveGame();
-
-            await PayoutRoutine();
         }
 
-        private async Task PayoutRoutine()
+        private async Task PayoutRoutine(int winningNumber)
         {
-            ChangeState(GameState.Payout);
+            await ChangeState(GameState.Payout);
             Debug.Log("Displaying results and paying out winnings...");
-
-            await Task.Delay(3000);
-
+            _statisticService.RecordWinningNumber(winningNumber);
+            _payoutManager.CalculatePayouts(winningNumber);
             Debug.Log("Payouts complete. Clearing bets for the next round.");
+            await Task.Delay(PAYOUT_DELAY_TIME);
             _bettingManager.ClearBets();
-            ChangeState(GameState.Betting);
+            await ChangeState(GameState.Betting);
         }
 
         public void SaveGame()

@@ -54,7 +54,8 @@ namespace Wheel
             {
                 angle += orbitSpeed * Time.deltaTime;
                 float rad = angle * Mathf.Deg2Rad;
-                transform.position = wheelCenter.position + new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * orbitRadius;
+                transform.position =
+                    wheelCenter.position + new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * orbitRadius;
                 elapsed += Time.deltaTime;
                 await Task.Yield();
             }
@@ -76,7 +77,8 @@ namespace Wheel
             {
                 angle += orbitSpeed * Time.deltaTime;
                 float rad = angle * Mathf.Deg2Rad;
-                transform.position = wheelCenter.position + new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * orbitRadius;
+                transform.position =
+                    wheelCenter.position + new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * orbitRadius;
                 await Task.Yield();
             }
 

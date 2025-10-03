@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Helper;
 using Models;
 using Services.Interfaces;
+using UI;
 using UnityEngine;
 
 namespace Services
 {
-    
     public class BettingManager : IBettingManager
     {
         public event Action OnBetsCleared;
@@ -16,6 +16,8 @@ namespace Services
         private int _playerBalance;
 
         public int PlayerBalance => _playerBalance;
+
+        List<BettingSpotUI> _registeredBettingSpots = new();
 
         public BettingManager(int startingBalance)
         {
@@ -49,6 +51,14 @@ namespace Services
             OnBetsCleared?.Invoke();
         }
 
+        public void RegisterBettingSpot(BettingSpotUI bettingSpotUI)
+        {
+            if (!_registeredBettingSpots.Contains(bettingSpotUI))
+            {
+                _registeredBettingSpots.Add(bettingSpotUI);
+            }
+        }
+
         public IReadOnlyList<Bet> GetCurrentBets()
         {
             return _currentBets.AsReadOnly();
@@ -61,7 +71,19 @@ namespace Services
 
             if (bets != null)
             {
-                _currentBets = new List<Bet>(bets);
+                // _currentBets = new List<Bet>(bets);
+                // // Recreate visual chips on betting spots if needed
+                // foreach (var bet in bets)
+                // {
+                //     foreach (var spot in _registeredBettingSpots)
+                //     {
+                //         if (spot.BetType == bet.BetType)
+                //         {
+                //             
+                //             spot.BehaveSpotClick();
+                //         }
+                //     }
+                // }
             }
 
             OnRestoreCompleted?.Invoke(_playerBalance, GetCurrentBets());

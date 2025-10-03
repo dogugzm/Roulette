@@ -9,6 +9,6 @@ namespace Services.Interfaces
     {
         GameObject TryPlaceChip(Transform parent);
         ChipSO CurrentChipSo { get; set; }
-        void RestoreState(IReadOnlyList<Bet> bets);
+        void RestoreState(ChipSO currentChipSo);
     }
 }

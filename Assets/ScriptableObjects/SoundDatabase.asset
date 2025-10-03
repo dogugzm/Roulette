@@ -37,3 +37,11 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 4f689fb4097854b4bae8eee421d1b072, type: 3}
     loop: 0
     channel: 1
+  - key: ball_drop
+    clip: {fileID: 8300000, guid: 4f689fb4097854b4bae8eee421d1b072, type: 3}
+    loop: 0
+    channel: 1
+  - key: lose
+    clip: {fileID: 8300000, guid: deea35f52701d40408875c20c610c239, type: 3}
+    loop: 0
+    channel: 1

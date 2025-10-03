@@ -15,6 +15,7 @@ namespace Services
         public const string BallSpin = "ball_spin";
         public const string Success = "success";
         public const string BallDrop = "ball_drop";
+        public const string Lose = "lose";
     }
 
     public class AudioManager : IAudioManager

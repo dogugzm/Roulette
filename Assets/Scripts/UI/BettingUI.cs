@@ -20,13 +20,12 @@ namespace UI
 
         [SerializeField] private Button spinButton;
         [SerializeField] private List<NumberUIView> numberUIs;
-        [SerializeField] private List<BettingSpotUI> bettingSpotUIs;
 
         private IBettingManager _bettingManager;
         private IChipManager _chipManager;
         private IPayoutManager _payoutManager;
         private ChipUIView _selectedChipView;
-
+    
 
         public void SpinButtonPressed()
         {

@@ -10,9 +10,14 @@ namespace DI
     public class GameInitializer : MonoBehaviour
     {
         [SerializeField] private List<CameraTransformData> cameraPositions;
-        [SerializeField] private SoundDatabaseSO soundDatabase;
+        [SerializeField] private WheelController wheelController;
+        [Header("AUDIO")] [SerializeField] private SoundDatabaseSO soundDatabase;
+
         [SerializeField] private AudioSource musicSource;
         [SerializeField] private AudioSource fxSource;
+
+        [Header("EFFECTS")] [SerializeField] private GameObject winnerEffect;
+        [SerializeField] private GameObject loseEffect;
 
         private void Awake()
         {
@@ -24,17 +29,17 @@ namespace DI
             var statisticService = new StatisticService();
             ServiceLocator.Register<IStatisticService>(statisticService);
 
-            var payoutManager = new PayoutManager(bettingManager, statisticService);
-            ServiceLocator.Register<IPayoutManager>(payoutManager);
-
             var audioService = new AudioManager(soundDatabase, musicSource, fxSource);
             ServiceLocator.Register<IAudioManager>(audioService);
+
+            var payoutManager =
+                new PayoutManager(bettingManager, statisticService, winnerEffect, audioService, loseEffect);
+            ServiceLocator.Register<IPayoutManager>(payoutManager);
 
             var chipManager = new ChipManager(bettingManager, audioService);
             ServiceLocator.Register<IChipManager>(chipManager);
 
-            IWheelController wheelController = FindObjectOfType<WheelController>();
-            ServiceLocator.Register<IWheelController>(wheelController);
+            ServiceLocator.Register(wheelController);
 
             var cameraService = new CameraService(cameraPositions);
             ServiceLocator.Register<ICameraService>(cameraService);

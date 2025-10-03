@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DI;
 using Helper;
 using Services;
@@ -16,11 +17,15 @@ namespace UI
 
         [SerializeField] private int[] numbers;
 
-        private float chipYOffset = 0.3f;
+        [SerializeField] private GameObject clickEffect;
+
+        private const float ChipYOffset = 0.3f;
 
         private IBettingManager _bettingManager;
         private IChipManager _chipManager;
         private Button _button;
+        public BetType BetType => betType;
+        public IReadOnlyList<int> Numbers => numbers;
 
         private int _chipAmount = 0;
 
@@ -30,6 +35,8 @@ namespace UI
             _chipManager = ServiceLocator.Get<IChipManager>();
 
             _bettingManager.OnBetsCleared += () => _chipAmount = 0;
+
+            _bettingManager.RegisterBettingSpot(this);
 
             _button = GetComponent<Button>();
             _button.onClick.AddListener(OnSpotClicked);
@@ -47,7 +54,8 @@ namespace UI
 
             int[] betNumbers = (betType >= BetType.Red) ? null : numbers;
 
-            bool success = _bettingManager.TryPlaceBet(chipValue, betType, betNumbers);
+            var success = _bettingManager.TryPlaceBet(chipValue, betType, betNumbers);
+            _ = EffectBehavior();
 
             if (success)
             {
@@ -57,11 +65,23 @@ namespace UI
                     _chipAmount++;
                     chip.transform.position += new Vector3(
                         Random.Range(-0.1f, 0.1f),
-                        chipYOffset * _chipAmount,
+                        ChipYOffset * _chipAmount,
                         Random.Range(-0.1f, 0.1f)
                     );
                 }
             }
+        }
+
+        private async Task EffectBehavior()
+        {
+            clickEffect.gameObject.SetActive(true);
+            await Task.Delay(1000, destroyCancellationToken);
+            clickEffect.gameObject.SetActive(false);
+        }
+
+        public void BehaveSpotClick()
+        {
+            OnSpotClicked();
         }
     }
 }

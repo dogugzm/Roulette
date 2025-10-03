@@ -16,8 +16,9 @@ namespace Services
 
         public ChipSO CurrentChipSo { get; set; }
 
-        public void RestoreState(IReadOnlyList<Bet> bets)
+        public void RestoreState(ChipSO currentChipSo)
         {
+            CurrentChipSo = currentChipSo;
         }
 
         private List<GameObject> _placedChips = new();
