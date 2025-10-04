@@ -1,7 +1,5 @@
 # Unity Roulette Prototype
 
-This repository contains a prototype of a European Roulette game developed in Unity. The project serves as a demonstration of gameplay mechanics, UI implementation, and software architecture principles within the Unity engine.
-
 ## Gameplay Demo
 
 [![Gameplay Video](https://img.youtube.com/vi/a-o2dvJZP2M/maxresdefault.jpg)](https://www.youtube.com/watch?v=a-o2dvJZP2M)
