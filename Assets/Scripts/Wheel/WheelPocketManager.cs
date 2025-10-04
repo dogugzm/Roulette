@@ -92,39 +92,10 @@ namespace Wheel
             return t;
         }
 
-        public Vector3 GetPocketPosition(int number)
-        {
-            var t = GetPocketTransform(number);
-            return t != null ? t.position : wheelCenter != null ? wheelCenter.position : Vector3.zero;
-        }
-
-        public Transform GetRandomPocketTransform()
-        {
-            if (pockets.Count == 0) return null;
-            return pockets[Random.Range(0, pockets.Count)];
-        }
-
         public int GetRandomPocketNumber()
         {
             if (wheelNumbers == null || wheelNumbers.Length == 0) return -1;
             return wheelNumbers[Random.Range(0, wheelNumbers.Length)];
         }
-
-        public int GetIndexOfNumber(int number)
-        {
-            if (wheelNumbers == null) return -1;
-            for (int i = 0; i < wheelNumbers.Length; i++)
-                if (wheelNumbers[i] == number)
-                    return i;
-            return -1;
-        }
-
-        public int GetNumberAtIndex(int index)
-        {
-            if (wheelNumbers == null || index < 0 || index >= wheelNumbers.Length) return -1;
-            return wheelNumbers[index];
-        }
-
-        public int WheelNumberCount() => wheelNumbers?.Length ?? 0;
     }
 }

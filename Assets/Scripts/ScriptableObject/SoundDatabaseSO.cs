@@ -17,7 +17,7 @@ namespace ScriptableObject
             public string key;
             public AudioClip clip;
             public bool loop;
-            public AudioChannel channel; // hangi source kullanılacak
+            public AudioChannel channel;
         }
 
         public SoundEntry[] sounds;

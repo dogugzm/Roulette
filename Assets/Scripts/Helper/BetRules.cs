@@ -5,7 +5,7 @@ namespace Helper
 {
     public static class BetRules
     {
-        // Payout ratios (e.g., Straight bet pays 35 to 1, so the multiplier is 35)
+        // Payout ratios
         public static int GetPayout(BetType betType)
         {
             switch (betType)
@@ -83,7 +83,7 @@ namespace Helper
                 case BetType.Column3:
                     return Enumerable.Range(1, 36).Where(n => n % 3 == 0).ToArray();
                 default:
-                    return new int[] { }; // Inside bets are defined by player selection, not pre-defined sets
+                    return new int[] { }; // Inside bets are defined by player selection
             }
         }
     }

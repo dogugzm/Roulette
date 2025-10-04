@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DI;
@@ -11,7 +12,7 @@ namespace Services
 {
     public class GameManager : MonoBehaviour
     {
-        private const int PAYOUT_DELAY_TIME = 4000;
+        private const int PayoutDelayTime = 4000;
 
         public enum GameState
         {
@@ -33,7 +34,7 @@ namespace Services
         private IAudioManager _audioManager;
         private IChipManager _chipManager;
 
-        async void Start()
+        public async void Start()
         {
             _bettingManager = ServiceLocator.Get<IBettingManager>();
             _payoutManager = ServiceLocator.Get<IPayoutManager>();
@@ -113,7 +114,7 @@ namespace Services
             _statisticService.RecordWinningNumber(winningNumber);
             _payoutManager.CalculatePayouts(winningNumber);
             Debug.Log("Payouts complete. Clearing bets for the next round.");
-            await Task.Delay(PAYOUT_DELAY_TIME);
+            await Task.Delay(PayoutDelayTime);
             _bettingManager.ClearBets();
             await ChangeState(GameState.Betting);
         }

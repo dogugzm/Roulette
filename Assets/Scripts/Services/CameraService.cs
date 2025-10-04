@@ -19,7 +19,7 @@ namespace Services
     public class CameraService : ICameraService
     {
         private readonly Camera _mainCamera;
-        private List<CameraTransformData> _cameraTransformDataList;
+        private readonly List<CameraTransformData> _cameraTransformDataList;
 
         public CameraService(List<CameraTransformData> cameraTransformDataList)
         {

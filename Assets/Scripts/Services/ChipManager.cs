@@ -1,20 +1,24 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using Models;
 using ScriptableObject;
 using Services.Interfaces;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 namespace Services
 {
     public class ChipManager : IChipManager
     {
-        private IBettingManager _bettingManager;
-        private IAudioManager _audioManager;
+        private const int InitialPoolSize = 10;
+        private readonly IBettingManager _bettingManager;
+        private readonly IAudioManager _audioManager;
         private readonly ChipDatabaseSO _chipDatabase;
+
+        private readonly Dictionary<string, IPoolService<ChipInstance>> _chipPools = new();
+        public ChipSO CurrentChipSo { get; set; }
+
+        private readonly List<PlacedChip> _placedChips = new();
 
         private class PlacedChip
         {
@@ -22,7 +26,16 @@ namespace Services
             public ChipInstance Instance;
         }
 
-        private readonly Dictionary<string, IPoolService<ChipInstance>> _chipPools = new();
+        public ChipManager(IBettingManager bettingManager, IAudioManager audioManager, ChipDatabaseSO chipDatabase)
+        {
+            _bettingManager = bettingManager;
+            _audioManager = audioManager;
+            _chipDatabase = chipDatabase;
+            if (_bettingManager != null)
+            {
+                _bettingManager.OnBetsCleared += HandleBetsCleared;
+            }
+        }
 
         public async Task InitializeAsync()
         {
@@ -32,7 +45,7 @@ namespace Services
                 var chipPrefab = chipSo.ChipPrefab.GetComponent<ChipInstance>();
                 if (chipPrefab != null)
                 {
-                    await pool.InitializeAsync(chipPrefab, 10); // Initial pool size of 10
+                    await pool.InitializeAsync(chipPrefab, InitialPoolSize);
                     _chipPools[chipSo.Id] = pool;
                 }
                 else
@@ -41,8 +54,6 @@ namespace Services
                 }
             }
         }
-
-        public ChipSO CurrentChipSo { get; set; }
 
         public void RestoreState(string currentChipId)
         {
@@ -54,9 +65,7 @@ namespace Services
 
             CurrentChipSo = _chipDatabase.GetChipByID(currentChipId);
         }
-
-        private List<PlacedChip> _placedChips = new();
-
+        
         public GameObject TryPlaceChip(Transform parent)
         {
             if (CurrentChipSo == null) return null;
@@ -78,19 +87,7 @@ namespace Services
             _placedChips.Add(new PlacedChip { ChipId = chipId, Instance = chipInstance });
             return chipInstance.gameObject;
         }
-
-
-        public ChipManager(IBettingManager bettingManager, IAudioManager audioManager, ChipDatabaseSO chipDatabase)
-        {
-            _bettingManager = bettingManager;
-            _audioManager = audioManager;
-            _chipDatabase = chipDatabase;
-            if (_bettingManager != null)
-            {
-                _bettingManager.OnBetsCleared += HandleBetsCleared;
-            }
-        }
-
+        
         private void Dispose()
         {
             if (_bettingManager != null)

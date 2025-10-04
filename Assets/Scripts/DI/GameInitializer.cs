@@ -9,6 +9,7 @@ namespace DI
 {
     public class GameInitializer : MonoBehaviour
     {
+        private const int StartingBalance = 1000;
         [SerializeField] private List<CameraTransformData> cameraPositions;
         [SerializeField] private WheelController wheelController;
         [Header("AUDIO")] [SerializeField] private SoundDatabaseSO soundDatabase;
@@ -26,7 +27,7 @@ namespace DI
 
             ServiceLocator.Register<ISaveLoadService>(new SaveLoadService());
 
-            var bettingManager = new BettingManager(1000);
+            var bettingManager = new BettingManager(StartingBalance);
             ServiceLocator.Register<IBettingManager>(bettingManager);
 
             var statisticService = new StatisticService();
